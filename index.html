@@ -15,7 +15,8 @@
         .input-group { background: white; width: 100%; max-width: 400px; border-radius: 12px; display: flex; padding: 12px; margin-bottom: 15px; box-sizing: border-box; }
         .input-group input { border: none; outline: none; width: 100%; font-size: 16px; color: #333; margin-left: 10px; }
         .btn { background: var(--blue); color: white; width: 100%; max-width: 400px; padding: 16px; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,123,255,0.3); }
-        #result { display: none; margin-top: 20px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px dashed var(--cyan); }
+        #result { display: none; margin-top: 20px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px dashed var(--cyan); text-align: center; }
+        #idOut { color: var(--cyan); margin: 10px 0; font-size: 14px; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -36,8 +37,9 @@
     <button class="btn" onclick="crear()">Generate Link</button>
 
     <div id="result">
-        <p style="font-size:12px; margin:0;">TU CÓDIGO ID:</p>
-        <h2 id="idOut" style="color:var(--cyan); margin:10px 0;"></h2>
+        <p style="font-size:12px; margin:0;">TU ENLACE GENERADO:</p>
+        <h2 id="idOut"></h2>
+        <button onclick="copyLink()" style="background:none; border:1px solid var(--cyan); color:var(--cyan); padding:5px 10px; border-radius:5px; cursor:pointer; font-size:12px;">Copiar Link</button>
     </div>
 
     <script type="module">
@@ -69,11 +71,20 @@
                     canal_yt: ytVal,
                     url_final: destVal
                 });
-                document.getElementById('idOut').innerText = idDoc;
+
+                // REEMPLAZA 'TU_USUARIO_DE_GITHUB' con tu nombre real de GitHub
+                const miWeb = `https://TU_USUARIO_DE_GITHUB.github.io/sub9unlock/unlock.html?id=${idDoc}`;
+                
+                document.getElementById('idOut').innerText = miWeb;
                 document.getElementById('result').style.display = "block";
             } catch (e) { alert("Error al guardar en Firebase"); }
         }
+
+        window.copyLink = () => {
+            const link = document.getElementById('idOut').innerText;
+            navigator.clipboard.writeText(link);
+            alert("Link copiado al portapapeles");
+        }
     </script>
 </body>
-</html>
 </html>
