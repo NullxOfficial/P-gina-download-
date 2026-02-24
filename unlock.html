@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub9Unlock | Verificando...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0d1117; --card: #161b22; --blue: #007bff; --red: #ff3e3e; --gray: #8b949e; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow-x: hidden; }
+        
+        .card { background: var(--card); border: 1px solid #30363d; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s; }
+
+        /* Loader Style */
+        .loader-bar { width: 100%; background: #30363d; height: 10px; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+        .progress { width: 0%; height: 100%; background: var(--blue); transition: width 0.1s; }
+
+        .btn { display: block; text-decoration: none; padding: 15px; border-radius: 12px; font-weight: 700; margin: 15px 0; cursor: pointer; border: none; font-size: 16px; }
+        .btn-blue { background: var(--blue); color: white; }
+        .btn-red { background: var(--red); color: white; }
+        .btn-disabled { background: var(--gray); opacity: 0.3; pointer-events: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="step1" class="step active">
+        <h3>Paso 1/3</h3>
+        <p>Verificando que no eres un robot...</p>
+        <button class="btn btn-blue" style="width:100%" onclick="nextStep(1)">VERIFICAR AHORA</button>
+    </div>
+
+    <div id="step2" class="step">
+        <h3>Generando Enlace...</h3>
+        <p>Por favor espera unos segundos.</p>
+        <div class="loader-bar"><div id="bar" class="progress"></div></div>
+        <p id="percent">0%</p>
+        <button id="btnNext2" class="btn btn-blue btn-disabled" style="width:100%" onclick="nextStep(2)">CONTINUAR</button>
+    </div>
+
+    <div id="step3" class="step">
+        <h2 id="msg">¡Casi listo!</h2>
+        <p>Suscríbete para desbloquear el botón de descarga.</p>
+        <a href="#" id="btnYoutube" target="_blank" class="btn btn-red" onclick="enableFinal()">1. SUSCRIBIRSE</a>
+        <a href="#" id="btnFinal" class="btn btn-blue btn-disabled" style="width:100%">2. OBTENER LINK</a>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBGObdEP8wfRYi-8G2mKhKY7DzCMy9yO28",
+        authDomain: "sub9unlock.firebaseapp.com",
+        projectId: "sub9unlock",
+        storageBucket: "sub9unlock.firebasestorage.app",
+        messagingSenderId: "302145973766",
+        appId: "1:302145973766:web:e76ee2b72f15dfbb829d87"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const idLink = urlParams.get('id');
+
+    // Cargar datos de Firebase al inicio
+    async function loadData() {
+        const q = query(collection(db, "Links"), where("id", "==", idLink));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            document.getElementById('btnYoutube').href = data.canal_yt;
+            document.getElementById('btnFinal').href = data.url_final;
+        });
+    }
+    loadData();
+
+    window.nextStep = (current) => {
+        document.getElementById(`step${current}`).classList.remove('active');
+        document.getElementById(`step${current+1}`).classList.add('active');
+        
+        if(current + 1 === 2) {
+            startLoading();
+        }
+    }
+
+    function startLoading() {
+        let width = 0;
+        const bar = document.getElementById("bar");
+        const percentText = document.getElementById("percent");
+        const interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                document.getElementById("btnNext2").classList.remove("btn-disabled");
+            } else {
+                width++;
+                bar.style.width = width + '%';
+                percentText.innerText = width + '%';
+            }
+        }, 80); // Velocidad de carga (8 segundos total)
+    }
+
+    window.enableFinal = () => {
+        setTimeout(() => {
+            document.getElementById('btnFinal').classList.remove('btn-disabled');
+        }, 3000);
+    }
+</script>
+</body>
+</html>
 
